@@ -1,7 +1,9 @@
 const inquirer = require('inquirer');
 const db = require('./db/queries');
 
+// Main menu function to prompt user for action
 const mainMenu = async () => {
+    // Prompt user for action choice
     const { action } = await inquirer.prompt({
         name: 'action',
         type: 'list',
@@ -18,6 +20,7 @@ const mainMenu = async () => {
         ]
     });
 
+    // Switch case based on user action choice
     switch (action) {
         case 'View All Departments':
             await db.viewAllDepartments();
@@ -29,6 +32,7 @@ const mainMenu = async () => {
             await db.viewAllEmployees();
             break;
         case 'Add a Department':
+            // Prompt for department name and add department
             const { departmentName } = await inquirer.prompt({
                 name: 'departmentName',
                 type: 'input',
@@ -37,6 +41,7 @@ const mainMenu = async () => {
             await db.addDepartment(departmentName);
             break;
         case 'Add a Role':
+            // Prompt for role details and add role
             const roleDetails = await inquirer.prompt([
                 { name: 'title', type: 'input', message: 'Enter the role title:' },
                 { name: 'salary', type: 'input', message: 'Enter the salary for the role:' },
@@ -45,6 +50,7 @@ const mainMenu = async () => {
             await db.addRole(roleDetails.title, roleDetails.salary, roleDetails.departmentId);
             break;
         case 'Add an Employee':
+            // Prompt for employee details and add employee
             const employeeDetails = await inquirer.prompt([
                 { name: 'firstName', type: 'input', message: 'Enter the first name of the employee:' },
                 { name: 'lastName', type: 'input', message: 'Enter the last name of the employee:' },
@@ -54,6 +60,7 @@ const mainMenu = async () => {
             await db.addEmployee(employeeDetails.firstName, employeeDetails.lastName, employeeDetails.roleId, employeeDetails.managerId);
             break;
         case 'Update an Employee Role':
+            // Prompt for update details and update employee role
             const updateDetails = await inquirer.prompt([
                 { name: 'employeeId', type: 'input', message: 'Enter the employee ID:' },
                 { name: 'roleId', type: 'input', message: 'Enter the new role ID:' }
@@ -61,10 +68,12 @@ const mainMenu = async () => {
             await db.updateEmployeeRole(updateDetails.employeeId, updateDetails.roleId);
             break;
         case 'Exit':
+            // Close database connection and exit the application
             db.client.end();
             process.exit();
     }
 
+    // Recursively call mainMenu to prompt for another action
     mainMenu();
 };
 
